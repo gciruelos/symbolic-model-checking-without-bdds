@@ -1,0 +1,176 @@
+\documentclass{beamer}
+\usepackage{beamerthemeshadow}
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{enumerate}
+\usepackage{mathtools}
+\usepackage{mathpazo}
+\usepackage{amssymb}
+
+\newcommand{\until}{\mathrel{\mathbf{U}}}
+\newcommand{\rel}{\mathrel{\mathbf{R}}}
+\newcommand{\opnext}{\mathbf{X}}
+\newcommand{\allp}{\mathbf{A}}
+\newcommand{\existsp}{\mathbf{E}}
+
+\begin{document}
+\title{Symbolic Model Checking Without BDDs}
+\author{AA}
+\date{20 de septiembre de 2017}
+
+
+\frame{\titlepage}
+
+\section{Presentación}
+\frame{\frametitle{Presentación}
+\begin{itemize}
+    \item Symbolic Model Checking withouth BDDs
+    \vspace{2em}
+    \item Autores
+\end{itemize}
+}
+
+\section{Prácticas de la materia}
+\frame{\frametitle{Presentación}
+El model checking es una t\'ecnica para verificar sistemas reactivos dado un sistema de transici\'on que lo represente y una especificaci\'on (usualmente en l\'ogicas temporales).
+\bigskip
+
+Symbolic model checking es una t\'ecnica que usa una representaci\'on can\'onica (mediante el uso de OBDDs) de los sistemas de transici\'on y de las f\'ormulas a chequear.
+\bigskip
+
+Dicha representaci\'on maneja hasta el orden de $10^{20}$ estados, para sistemas m\'as complejos, el c\'omputo se vuelve intratable.
+
+}
+
+\frame{\frametitle{Presentación}
+Sin embargo, los OBDDs son muy sensibles al orden de las variables y adem\'as, en el peor caso su tamanio no es polinomial en la cantidad de variables.
+\bigskip
+
+En este trabajo presentan un una t\'ecnica basada en SAT para model checking simb\'olico. La idea es considerar contraejemplos de un cierto tamanio y generar una f\'ormula proposicional que sea satisfacible si y solo si existe tal contraejemplo.
+\bigskip
+
+La ventaja es que la reducci\'on se puede hacer en tiempo polinomial y no requiere la construcci\'on del
+aut\'omata completo.
+
+El m\'etodo propuesto es muy r\'apido , dada la naturaleza depth-first de SAT, y adem\'as encuentra contraejemplos de longitud m\'inima.
+}
+
+\frame{\frametitle{Presentación}
+{\bf Definition 1.} Una estructura de Kripke es una tupla $M = (S, I, T, \mathcal{L})$ con un conjunto finito de
+estados $S$, un conjunto de estados iniciales $I \subseteq S$, una relaci\'on de transici\'on $T \subseteq S \times S$, y un etiquetado de estados $\mathcal{L} : S \to \mathcal{P}(A)$ de proposiciones at\'omicas $A$.
+\bigskip
+
+Aclaraciones
+\begin{itemize}
+  \item Usamos una codificaci\'on binaria de las variables.
+  \item $f_I(s) \iff s \in I$.
+  \item $f_p(s) \iff p \in \mathcal{L}(s)$.
+  \item $(s, t) \in T \iff s \to t$.
+  \item $\pi = (s_0, s_n, ...)$ definimos $\pi_i = s_i$ y $\pi^i = (s_i, s_{i+1}, ...)$.
+\end{itemize}
+}
+
+\frame{\frametitle{Presentación}
+{\bf Definition 2.} Sem\'antica. Dada una estructura de Kripke $M$, un camino $\pi$ en $M$, $f$ una f\'ormula de LTL. Entonces $\pi \models f$ ($f$ es v\'alido a lo largo de $\pi$) se define como sigue.
+\bigskip
+
+\begin{itemize}
+  \item $\pi \models p \iff p\in \mathcal{L}(\pi(0))$
+  \item $\pi \models \neg p \iff p \not\in \mathcal{L}(\pi(0))$
+  \item $\pi \models f \land g \iff \pi \models f \text{ y } \pi \models g$
+  \item $\pi \models f \lor g \iff \pi \models f \text{ o } \pi \models g$
+  \item $\pi \models \square f \iff \forall i. \pi^i \models f$
+  \item $\pi \models \lozenge f \iff \exists i. \pi^i \models f$
+  \item $\pi \models \opnext f \iff \pi^1 \models f$
+  \item $\pi \models f \until g \iff \exists i [ \pi^i \models g \text{ y } \forall j < i. \pi^j \models f]$
+  \item $\pi \models f \rel g \iff \forall i [ \pi^i \models g \text{ o } \exists j < i. \pi^j \models f]$
+\end{itemize}
+}
+
+
+\frame{\frametitle{Presentación}
+{\bf Definition 3 (Validez).} Una f\'ormula LTL $f$ es universalmente v\'alida en una estructura de Kripke $M$ ($M \models \allp f$) si y solo si $\pi \models f$ para todos los caminos $\pi$ en $M$ con $\pi(0) \in I$.
+Una f\'ormula LTL $f$ es existencialmente v\'alida en una estructura de Kripke $M$ ($M \models \existsp f$) si y solo si existen un camino $\pi$ en $M$ con $\pi(0) \in I$ tal que $\pi \models f$.
+
+\bigskip
+  $M \models \allp f   \iff   M \not\models \existsp \neg f$
+
+% Es claro que una f\'ormula LTL $f$ es universalmente v\'alida en una estructura de Kripke si y solo si su negaci\'on no es existencialmente v\'alida.
+
+\bigskip
+Reducimos la b\'usqueda de un contrajemplo de $\allp f$ a la b\'usqueda de una traza que satisfaga $\neg f$.
+
+\bigskip
+La idea b\'asica del bouded model checking es considerar solo un prefijo finito de un camino que sea soluci\'on al problema de model checking existencial.
+}
+
+\frame{\frametitle{Presentación}
+Que consideremos s\'olo prefijos finitos no quiere decir que consideremos s\'olo caminos finitos.
+
+\bigskip
+Un prefijo finito puede representar un camino infinito si el prefijo contiene un loop.
+
+% FIGURA 2
+}
+
+\frame{\frametitle{Presentación}
+% FIGURA 2
+{\bf Definici\'on 4.} Para $l \leq k$ llamamos a un camino $\pi$ un $(k,l)$-loop si $\pi(k) \to \pi(l)$
+y $\pi = u v^{\omega}$ con $u = (\pi(0), ..., \pi(l \iff 1))$ y $v = (\pi(l), ..., \pi(k))$.
+Llamamos a $\pi$ simplemente un $k$-loop si hay un $l \in \mathbb{N}$ tal que $l \leq k$ para el cual $\pi$
+es un $(k, l)$-loop.
+
+\bigskip
+{\bf Definici\'on 5. (Bounded semantics para trazas con loop)}
+Sea $k \in \mathbb{N}$ y sea $\pi$ un $k$-loop y $f$ una f\'ormula LTL.
+$\pi_k \models f \iff \pi \models f$.
+}
+
+\frame{\frametitle{Presentación}
+{\bf Definition 6. (Bounded semantics para trazas sin loops)}
+Sea $k \in \mathbb{N}$ y sea $\pi$ una traza que no es un $k$-loop y $f$ una f\'ormula LTL.
+
+$\pi \models_k f \iff \pi \models^0_k f$
+
+\begin{itemize}
+  \item $\pi \models^i_k p \iff p\in \mathcal{L}(\pi(i))$
+  \item $\pi \models^i_k \neg p \iff p \not\in \mathcal{L}(\pi(i))$
+  \item $\pi \models^i_k f \land g \iff \pi \models^i_k f \text{ y } \pi \models^i_k g$
+  \item $\pi \models^i_k f \lor g \iff \pi \models^i_k f \text{ o } \pi \models^i_k g$
+  \item $\pi \models^i_k \square f \iff false$
+  \item $\pi \models^i_k \lozenge f \iff \exists i \leq j \leq k. \pi \models^j_k f$
+  \item $\pi \models^i_k \opnext f \iff i < k \text{ y } \pi \models^{i+1}_k f$
+  \item {\small $\pi \models^i_k f \until g \iff \exists j, i \leq j \leq k [ \pi \models^j_k g \text{ y } \forall n, i \leq n < j. \pi \models^n_k f]$}
+  \item {\small $\pi \models^i_k f \rel g \iff \exists j, i \leq j \leq k [ \pi \models^j_k f \text{ y } \forall n, i \leq n < j. \pi \models^n_k g]$}
+\end{itemize}
+}
+
+
+\frame{\frametitle{Presentación}
+{\bf Lemma 7. (Soundness / Correctitud)}
+Sea $f$ una f\'ormula LTL, $k \in \mathbb{N}$ y $\pi$ un camino $\pi \models_k f \implies \pi \models f$.
+\bigskip
+
+{\bf Lemma 8. (Completeness / Completitud para existenciales)}
+Sea $f$ una f\'ormula LTL, $M$ estructura de Kripke. Si $M \models \existsp f$ entonces existe
+$k \in \mathbb{N}$ tal que $M \models_k \existsp f$.
+\bigskip
+
+{\bf Teorema 9. (Correctitud y completitud para  existenciales)}
+Sea $f$ una f\'ormula LTL, $M$ estructura de Kripke. $M \models \existsp f$ si y solo si existe
+$k \in \mathbb{N}$ tal que $M \models_k \existsp f$.
+}
+
+
+
+\frame{
+\huge
+\begin{center}
+¿Preguntas?
+\end{center}
+}
+
+\end{document}
+
+
