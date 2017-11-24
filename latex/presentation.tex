@@ -7,12 +7,18 @@
 \usepackage{mathtools}
 \usepackage{mathpazo}
 \usepackage{amssymb}
+\usepackage{stmaryrd}
 
 \newcommand{\until}{\mathrel{\mathbf{U}}}
 \newcommand{\rel}{\mathrel{\mathbf{R}}}
 \newcommand{\opnext}{\mathbf{X}}
 \newcommand{\allp}{\mathbf{A}}
 \newcommand{\existsp}{\mathbf{E}}
+\newcommand{\formul}[3]{\llbracket #1, #2 \rrbracket_{#3}}
+\newcommand{\dcorch}[1]{\llbracket #1 \rrbracket}
+\newcommand{\ldcorch}[1]{\prescript{}{l}{\llbracket #1 \rrbracket}}
+\newcommand{\eqdef}{:=}
+
 
 \begin{document}
 \title{Symbolic Model Checking Without BDDs}
@@ -163,6 +169,104 @@ $k \in \mathbb{N}$ tal que $M \models_k \existsp f$.
 }
 
 
+\frame{\frametitle{Presentación}
+Dada una estructura de Kripke $M$, una f\'ormula LTL $f$ y una cota $k$ construiremos la f\'ormula
+proposicional $\formul{M}{f}{k}$. Las variables $s_0, ..., s_k$ de $\formul{M}{f}{k}$ representar\'an la secuencia de estados de un camino $\pi$. Cada $s_i$ es un vector de variables de estado.
+
+La f\'ormula $\formul{M}{f}{k}$ representa esencialmente restricciones sonre $s_0, ..., s_k$ tal que $\formul{M}{f}{k}$ es satisfacible si y solo si $M \models_k \existsp f$.
+
+El tamanio de $\formul{M}{f}{k}$ es polinomial en el tamanio de $f$, cuadr\'atica en $k$ y lineal en el tamanio
+de las f\'ormulas proposicionales para $T$, $I$ y $p \in A$.
+}
+
+\frame{\frametitle{Presentación}
+{\bf Definici\'on 10. (Desarrollando la condici\'on de transici\'on)}
+Dada una estructura de Kripke $M$ y una cota $k \in \mathbb{N}$:
+\begin{center}
+$\dcorch{M}_k \eqdef I(s_0) \land \bigwedge\limits_{i=0}^{k-1} T(s_i, s_{i+1})$
+\end{center}
+}
+
+
+\frame{\frametitle{Presentación}
+{\bf Definici\'on 10. (Traduciendo una f\'ormula LTL sin un loop).}
+Dada una f\'ormula LTL $f$ y dados $k, i \in \mathbb{N}$ tales que $i \leq k$.
+\begin{itemize}
+  \item $\dcorch{p}^i_k \eqdef p(s_i)$
+  \item $\dcorch{\neg p}^i_k \eqdef \neg p(s_i)$
+  \item $\dcorch{f \land g}^i_k \eqdef \dcorch{f}^i_k \land \dcorch{g}^i_k$
+  \item $\dcorch{f \lor g}^i_k \eqdef \dcorch{f}^i_k \lor \dcorch{g}^i_k$
+  \item $\dcorch{\square f}^i_k \eqdef false$
+  \item $\dcorch{\lozenge f}^i_k \eqdef \bigvee\limits_{j=i}^k \dcorch{f}_k^j$
+  \item $\dcorch{\opnext f}^i_k \eqdef \text{ if } i < k \text{ then } \dcorch{f}_k^{i+1} \text{ else } false$
+  \item {\small $\dcorch{f \until g}^i_k \eqdef \bigvee\limits_{j=i}^k \bigg(\dcorch{g}_k^j \land \bigwedge\limits_{n=i}^{j-1} \dcorch{f}_k^n \bigg)$}
+  \item {\small $\dcorch{f \rel g}^i_k \eqdef \bigvee\limits_{j=i}^k \bigg(\dcorch{f}_k^j \land \bigwedge\limits_{n=i}^{j} \dcorch{g}_k^n \bigg)$}
+\end{itemize}
+}
+
+\frame{\frametitle{Presentación}
+{\bf Definicion 12. (Sucesor en un loop). } Sea $k, l, i, \in \mathbb{N}$, con $l, i \leq k$.
+Definimos el sucesor $succ(i)$ de $i$ en un $(k,l)$-loop como $succ(i) = i + 1$ para $i < k$ y $succ(k) = l$.
+
+{\bf Definici\'on 13 (Traduccion de una f\'ormula LTL con un loop).}
+Dada una f\'ormula LTL $f$ y dados $k, l, i \in \mathbb{N}$ tales que $l, i \leq k$.
+
+\begin{itemize}
+  \item $\ldcorch{p}^i_k \eqdef p(s_i)$
+  \item $\ldcorch{\neg p}^i_k \eqdef \neg p(s_i)$
+  \item $\ldcorch{f \land g}^i_k \eqdef \ldcorch{f}^i_k \land \ldcorch{g}^i_k$
+  \item $\ldcorch{f \lor g}^i_k \eqdef \ldcorch{f}^i_k \lor \ldcorch{g}^i_k$
+  \item $\ldcorch{\square f}^i_k \eqdef \bigwedge\limits_{j=min(i,k)}^k \ldcorch{f}_k^j$
+  \item $\ldcorch{\lozenge f}^i_k \eqdef \bigvee\limits_{j=min(i,k)}^k \ldcorch{f}_k^j$
+  \item $\ldcorch{\opnext f}^i_k \eqdef \ldcorch{f}^{succ(i)}_k$
+\end{itemize}
+}
+
+\frame{\frametitle{Presentación}
+\begin{center}
+$\ldcorch{f \until g}^i_k \eqdef \bigvee\limits_{j=i}^k \bigg(\ldcorch{g}_k^j \land \bigwedge\limits_{n=i}^{j-1} \ldcorch{f}_k^n \bigg) \lor$
+$\bigvee\limits_{j=l}^{i-1} \bigg(\ldcorch{g}_k^j \land \bigwedge\limits_{n=i}^{k} \ldcorch{f}_k^n
+                                                 \land \bigwedge\limits_{n=l}^{j-1} \ldcorch{f}_k^n \bigg)$
+\end{center}
+
+% INSERTAR DIBUJO
+}
+
+
+\frame{\frametitle{Presentación}
+\begin{center}
+$\ldcorch{f \until g}^i_k \eqdef \bigwedge\limits_{j=min(i,l)}^k \ldcorch{g}_k^j \lor$
+
+$\bigvee\limits_{j=i}^k \bigg(\ldcorch{f}_k^j \land \bigwedge\limits_{n=i}^{j} \ldcorch{g}_k^n \bigg) \lor$
+
+$\bigvee\limits_{j=l}^{i-1} \bigg(\ldcorch{f}_k^j \land \bigwedge\limits_{n=i}^{k} \ldcorch{g}_k^n
+                                                 \land \bigwedge\limits_{n=l}^{j} \ldcorch{g}_k^n \bigg)$
+\end{center}
+}
+
+\frame{\frametitle{Presentación}
+{\bf Definici\'on 14 (Condici\'on de ciclo).}
+Dados $k,l \in \mathbb{N}$ tales que $l \leq k$ entonces $\prescript{}{l}{L}_k \eqdef T(s_k, s_l)$, $L_k \eqdef \bigvee\limits_{l=0}^k \prescript{}{l}{L}_k$.
+}
+
+\frame{\frametitle{Presentación}
+{\bf Definici\'on 15 (Traducci\'on general). }
+Sea $f$ una f\'ormula LTL, $M$ una estructura de Kripke y $k \in \mathbb{N}$.
+\[
+  \formul{M}{f}{k} \eqdef \dcorch{M}_k \land \bigg(
+    \bigg( \neg L_k \land \dcorch{f}_k^0\bigg) \lor
+    \bigvee\limits_{l=0}^k \bigg(\prescript{}{l}{L}_k \land \ldcorch{f}_k^0 \bigg) \bigg)
+\]
+\bigskip
+
+{\bf Teorema 16. (Correctitud del algoritmo).}
+$\formul{M}{f}{k}$ es satisfacible si y solo si $M \models_k \existsp f$.
+\bigskip
+
+
+{\bf Corolario 17. (Correctitud v2 del algoritmo).}
+$M \models \allp \neg f$ si y solo si $\formul{M}{f}{k}$ es insatisfacible para todo $k \in \mathbb{N}$.
+}
 
 \frame{
 \huge
