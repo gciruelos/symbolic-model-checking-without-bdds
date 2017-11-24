@@ -36,12 +36,14 @@
     \vspace{2em}
 Autores:
 \begin{itemize}
-    \item Armin Biere
-    \item Alessandro Cimatti
-    \item Edmund Clarke
-    \item Yunshan Zhu
+    \item Armin Biere$^1$
+    \item Alessandro Cimatti$^2$
+    \item Edmund Clarke$^1$
+    \item Yunshan Zhu$^1$
 \end{itemize}
-Todos pertenecen al Departamento de Computación de la Universidad de Carnegie Mellon.
+$^1$ Departamento de Computación de la Universidad de Carnegie Mellon
+
+$^2$ Instituto de Investigación Científica y Tecnológica de Provo, Italia
 }
 
 \frame{\frametitle{Contexto}
@@ -124,13 +126,13 @@ Que consideremos sólo prefijos finitos no quiere decir que consideremos sólo c
 \bigskip
 Un prefijo finito puede representar un camino infinito si el prefijo contiene un loop.
 
-% FIGURA 2
+\includegraphics[width=10cm]{images/fig2.png}
 }
 
 \frame{\frametitle{Loops}
-% FIGURA 2
+\includegraphics[width=10cm]{images/fig2.png}
 {\bf Definición 4.} Para $l \leq k$ llamamos a un camino $\pi$ un $(k,l)$-loop si $\pi(k) \to \pi(l)$
-y $\pi = u v^{\omega}$ con $u = (\pi(0), ..., \pi(l \iff 1))$ y $v = (\pi(l), ..., \pi(k))$.
+y $\pi = u v^{\omega}$ con $u = (\pi(0), ..., \pi(l - 1))$ y $v = (\pi(l), ..., \pi(k))$.
 Llamamos a $\pi$ simplemente un $k$-loop si hay un $l \in \mathbb{N}$ tal que $l \leq k$ para el cual $\pi$
 es un $(k, l)$-loop.
 
@@ -291,6 +293,17 @@ En tal caso se define el diámetro del bucle de $M$ como $(u,v)$.
 {\bf Teorema 27.} Dada una fórmula LTL $f$ y una estructura de Kripke $M$ con forma de lazo, sea $(u,v)$ el
 diámetro del bucle de $M$, entonces $M \models \existsp f$ si y solo si existe $k \leq u + v$ tal que
 $M \models_k \existsp f$.
+}
+
+\section{Resultados}
+
+
+\frame{\frametitle{Resultados}
+\includegraphics[width=10cm]{images/resultado1.png}
+}
+
+\frame{\frametitle{Resultados}
+\includegraphics[width=10cm]{images/resultado2.png}
 }
 
 
