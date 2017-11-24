@@ -8,12 +8,15 @@
 \usepackage{mathpazo}
 \usepackage{amssymb}
 \usepackage{stmaryrd}
+\usepackage{lmodern}
 
 \newcommand{\until}{\mathrel{\mathbf{U}}}
 \newcommand{\rel}{\mathrel{\mathbf{R}}}
 \newcommand{\opnext}{\mathbf{X}}
 \newcommand{\allp}{\mathbf{A}}
 \newcommand{\existsp}{\mathbf{E}}
+\newcommand{\squarep}{\mathbf{G}}
+\newcommand{\lozp}{\mathbf{F}}
 \newcommand{\formul}[3]{\llbracket #1, #2 \rrbracket_{#3}}
 \newcommand{\dcorch}[1]{\llbracket #1 \rrbracket}
 \newcommand{\ldcorch}[1]{\prescript{}{l}{\llbracket #1 \rrbracket}}
@@ -26,7 +29,7 @@
 \date{27 de noviembre de 2017}
 
 
-\frame{\titlepage}
+%\frame{\titlepage}
 
 \section{Introducción}
 \frame{\frametitle{El trabajo}
@@ -72,41 +75,41 @@ El método propuesto es muy rápido , dada la naturaleza depth-first de SAT, y a
 
 \section{Desarrollo}
 \frame{\frametitle{Definiciones}
-{\bf Definition 1.} Una estructura de Kripke es una tupla $M = (S, I, T, \mathcal{L})$ con un conjunto finito de
-estados $S$, un conjunto de estados iniciales $I \subseteq S$, una relación de transición $T \subseteq S \times S$, y un etiquetado de estados $\mathcal{L} : S \to \mathcal{P}(A)$ de proposiciones atómicas $A$.
+{\bf Definition 1.} Una estructura de Kripke es una tupla $M = (S, I, T, \ell)$ con un conjunto finito de
+estados $S$, un conjunto de estados iniciales $I \subseteq S$, una relación de transición $T \subseteq S \times S$, y un etiquetado de estados $\ell : S \to \mathcal{P}(A)$ de proposiciones atómicas $A$.
 \bigskip
 
 Aclaraciones
 \begin{itemize}
   \item Usamos una codificación binaria de las variables.
   \item $f_I(s) \iff s \in I$.
-  \item $f_p(s) \iff p \in \mathcal{L}(s)$.
+  \item $f_p(s) \iff p \in \ell(s)$.
   \item $(s, t) \in T \iff s \to t$.
-  \item $\pi = (s_0, s_n, ...)$ definimos $\pi_i = s_i$ y $\pi^i = (s_i, s_{i+1}, ...)$.
+  \item $\pi = (s_0, s_1, ...)$ definimos $\pi_i = s_i$ y $\pi^i = (s_i, s_{i+1}, ...)$.
 \end{itemize}
 }
 
 \frame{\frametitle{Definiciones...}
-{\bf Definition 2.} Semántica. Dada una estructura de Kripke $M$, un camino $\pi$ en $M$, $f$ una fórmula de LTL. Entonces $\pi \models f$ ($f$ es válido a lo largo de $\pi$) se define como sigue.
+{\bf Definition 2.} Semántica. Dada una estructura de Kripke $M$, un camino $\pi$ en $M$, $f$ una fórmula de LTL. Entonces $\pi \models f$ ($f$ es válido a lo largo de $\pi$) se define:
 \bigskip
 
 \begin{itemize}
-  \item $\pi \models p \iff p\in \mathcal{L}(\pi(0))$
-  \item $\pi \models \neg p \iff p \not\in \mathcal{L}(\pi(0))$
+  \item $\pi \models p \iff p\in \ell(\pi_0)$
+  \item $\pi \models \neg p \iff p \not\in \ell(\pi_0)$
   \item $\pi \models f \land g \iff \pi \models f \text{ y } \pi \models g$
   \item $\pi \models f \lor g \iff \pi \models f \text{ o } \pi \models g$
-  \item $\pi \models \square f \iff \forall i. \pi^i \models f$
-  \item $\pi \models \lozenge f \iff \exists i. \pi^i \models f$
+  \item $\pi \models \squarep f \iff \forall i, \pi^i \models f$
+  \item $\pi \models \lozp f \iff \exists i, \pi^i \models f$
   \item $\pi \models \opnext f \iff \pi^1 \models f$
-  \item $\pi \models f \until g \iff \exists i [ \pi^i \models g \text{ y } \forall j < i. \pi^j \models f]$
-  \item $\pi \models f \rel g \iff \forall i [ \pi^i \models g \text{ o } \exists j < i. \pi^j \models f]$
+  \item $\pi \models f \until g \iff \exists i , ( \pi^i \models g \text{ y } \forall j < i, \pi^j \models f)$
+  \item $\pi \models f \rel g \iff \forall i ,   ( \pi^i \models g \text{ o } \exists j < i, \pi^j \models f)$
 \end{itemize}
 }
 
 
 \frame{\frametitle{Definiciones... (cont.)}
-{\bf Definition 3 (Validez).} Una fórmula LTL $f$ es universalmente válida en una estructura de Kripke $M$ ($M \models \allp f$) si y solo si $\pi \models f$ para todos los caminos $\pi$ en $M$ con $\pi(0) \in I$.
-Una fórmula LTL $f$ es existencialmente válida en una estructura de Kripke $M$ ($M \models \existsp f$) si y solo si existen un camino $\pi$ en $M$ con $\pi(0) \in I$ tal que $\pi \models f$.
+{\bf Definition 3 (Validez).} Una fórmula LTL $f$ es universalmente válida en una estructura de Kripke $M$ ($M \models \allp f$) si y solo si $\pi \models f$ para todos los caminos $\pi$ en $M$ con $\pi_0 \in I$.
+Una fórmula LTL $f$ es existencialmente válida en una estructura de Kripke $M$ ($M \models \existsp f$) si y solo si existen un camino $\pi$ en $M$ con $\pi_0 \in I$ tal que $\pi \models f$.
 
 \bigskip
   $M \models \allp f   \iff   M \not\models \existsp \neg f$
@@ -131,9 +134,9 @@ Un prefijo finito puede representar un camino infinito si el prefijo contiene un
 
 \frame{\frametitle{Loops}
 \includegraphics[width=10cm]{images/fig2.png}
-{\bf Definición 4.} Para $l \leq k$ llamamos a un camino $\pi$ un $(k,l)$-loop si $\pi(k) \to \pi(l)$
-y $\pi = u v^{\omega}$ con $u = (\pi(0), ..., \pi(l - 1))$ y $v = (\pi(l), ..., \pi(k))$.
-Llamamos a $\pi$ simplemente un $k$-loop si hay un $l \in \mathbb{N}$ tal que $l \leq k$ para el cual $\pi$
+{\bf Definición 4.} Para $l \leqslant k$ llamamos a un camino $\pi$ un $(k,l)$-loop si $\pi_k \to \pi_l$
+y $\pi = u v^{\omega}$ con $u = (\pi_0, ..., \pi_{l - 1})$ y $v = (\pi_l, ..., \pi_k)$.
+Llamamos a $\pi$ simplemente un $k$-loop si hay un $l \in \mathbb{N}$ tal que $l \leqslant k$ para el cual $\pi$
 es un $(k, l)$-loop.
 
 \bigskip
@@ -149,15 +152,15 @@ Sea $k \in \mathbb{N}$ y sea $\pi$ una traza que no es un $k$-loop y $f$ una fó
 $\pi \models_k f \iff \pi \models^0_k f$
 
 \begin{itemize}
-  \item $\pi \models^i_k p \iff p\in \mathcal{L}(\pi(i))$
-  \item $\pi \models^i_k \neg p \iff p \not\in \mathcal{L}(\pi(i))$
+  \item $\pi \models^i_k p \iff p\in \ell(\pi_i)$
+  \item $\pi \models^i_k \neg p \iff p \not\in \ell(\pi_i)$
   \item $\pi \models^i_k f \land g \iff \pi \models^i_k f \text{ y } \pi \models^i_k g$
   \item $\pi \models^i_k f \lor g \iff \pi \models^i_k f \text{ o } \pi \models^i_k g$
-  \item $\pi \models^i_k \square f \iff false$
-  \item $\pi \models^i_k \lozenge f \iff \exists i \leq j \leq k. \pi \models^j_k f$
+  \item $\pi \models^i_k \squarep f \iff false$
+  \item $\pi \models^i_k \lozp f \iff \exists i \leqslant j \leqslant k. \pi \models^j_k f$
   \item $\pi \models^i_k \opnext f \iff i < k \text{ y } \pi \models^{i+1}_k f$
-  \item {\small $\pi \models^i_k f \until g \iff \exists j, i \leq j \leq k [ \pi \models^j_k g \text{ y } \forall n, i \leq n < j. \pi \models^n_k f]$}
-  \item {\small $\pi \models^i_k f \rel g \iff \exists j, i \leq j \leq k [ \pi \models^j_k f \text{ y } \forall n, i \leq n < j. \pi \models^n_k g]$}
+  \item {\small $\pi \models^i_k f \until g \iff \exists j, i \leqslant j \leqslant k [ \pi \models^j_k g \text{ y } \forall n, i \leqslant n < j, \pi \models^n_k f]$}
+  \item {\small $\pi \models^i_k f \rel g \iff \exists j, i \leqslant j \leqslant k [ \pi \models^j_k f \text{ y } \forall n, i \leqslant n < j, \pi \models^n_k g]$}
 \end{itemize}
 }
 
@@ -201,14 +204,14 @@ $\dcorch{M}_k \eqdef I(s_0) \land \bigwedge\limits_{i=0}^{k-1} T(s_i, s_{i+1})$
 
 \frame{\frametitle{Traduciendo las fórmulas LTL cuando no hay loop}
 {\bf Definición 10. (Traduciendo una fórmula LTL sin un loop).}
-Dada una fórmula LTL $f$ y dados $k, i \in \mathbb{N}$ tales que $i \leq k$.
+Dada una fórmula LTL $f$ y dados $k, i \in \mathbb{N}$ tales que $i \leqslant k$.
 \begin{itemize}
   \item $\dcorch{p}^i_k \eqdef p(s_i)$
   \item $\dcorch{\neg p}^i_k \eqdef \neg p(s_i)$
   \item $\dcorch{f \land g}^i_k \eqdef \dcorch{f}^i_k \land \dcorch{g}^i_k$
   \item $\dcorch{f \lor g}^i_k \eqdef \dcorch{f}^i_k \lor \dcorch{g}^i_k$
-  \item $\dcorch{\square f}^i_k \eqdef false$
-  \item $\dcorch{\lozenge f}^i_k \eqdef \bigvee\limits_{j=i}^k \dcorch{f}_k^j$
+  \item $\dcorch{\squarep f}^i_k \eqdef false$
+  \item $\dcorch{\lozp f}^i_k \eqdef \bigvee\limits_{j=i}^k \dcorch{f}_k^j$
   \item $\dcorch{\opnext f}^i_k \eqdef \text{ if } i < k \text{ then } \dcorch{f}_k^{i+1} \text{ else } false$
   \item {\small $\dcorch{f \until g}^i_k \eqdef \bigvee\limits_{j=i}^k \bigg(\dcorch{g}_k^j \land \bigwedge\limits_{n=i}^{j-1} \dcorch{f}_k^n \bigg)$}
   \item {\small $\dcorch{f \rel g}^i_k \eqdef \bigvee\limits_{j=i}^k \bigg(\dcorch{f}_k^j \land \bigwedge\limits_{n=i}^{j} \dcorch{g}_k^n \bigg)$}
@@ -216,19 +219,19 @@ Dada una fórmula LTL $f$ y dados $k, i \in \mathbb{N}$ tales que $i \leq k$.
 }
 
 \frame{\frametitle{Traduciendo las fórmulas LTL cuando hay loop}
-{\bf Definición 12. (Sucesor en un loop). } Sea $k, l, i, \in \mathbb{N}$, con $l, i \leq k$.
+{\bf Definición 12. (Sucesor en un loop). } Sea $k, l, i, \in \mathbb{N}$, con $l, i \leqslant k$.
 Definimos el sucesor $succ(i)$ de $i$ en un $(k,l)$-loop como $succ(i) = i + 1$ para $i < k$ y $succ(k) = l$.
 
 {\bf Definición 13 (Traducción de una fórmula LTL con un loop).}
-Dada una fórmula LTL $f$ y dados $k, l, i \in \mathbb{N}$ tales que $l, i \leq k$.
+Dada una fórmula LTL $f$ y dados $k, l, i \in \mathbb{N}$ tales que $l, i \leqslant k$.
 
 \begin{itemize}
   \item $\ldcorch{p}^i_k \eqdef p(s_i)$
   \item $\ldcorch{\neg p}^i_k \eqdef \neg p(s_i)$
   \item $\ldcorch{f \land g}^i_k \eqdef \ldcorch{f}^i_k \land \ldcorch{g}^i_k$
   \item $\ldcorch{f \lor g}^i_k \eqdef \ldcorch{f}^i_k \lor \ldcorch{g}^i_k$
-  \item $\ldcorch{\square f}^i_k \eqdef \bigwedge\limits_{j=min(i,k)}^k \ldcorch{f}_k^j$
-  \item $\ldcorch{\lozenge f}^i_k \eqdef \bigvee\limits_{j=min(i,k)}^k \ldcorch{f}_k^j$
+  \item $\ldcorch{\squarep f}^i_k \eqdef \bigwedge\limits_{j=min(i,k)}^k \ldcorch{f}_k^j$
+  \item $\ldcorch{\lozp f}^i_k \eqdef \bigvee\limits_{j=min(i,k)}^k \ldcorch{f}_k^j$
   \item $\ldcorch{\opnext f}^i_k \eqdef \ldcorch{f}^{succ(i)}_k$
 \end{itemize}
 }
@@ -258,7 +261,7 @@ $\bigvee\limits_{j=l}^{i-1} \bigg(\ldcorch{f}_k^j \land \bigwedge\limits_{n=i}^{
 
 \frame{\frametitle{Terminando la construcción de la fórmula}
 {\bf Definición 14 (Condición de ciclo).}
-Dados $k,l \in \mathbb{N}$ tales que $l \leq k$ entonces $\prescript{}{l}{L}_k \eqdef T(s_k, s_l)$, $L_k \eqdef \bigvee\limits_{l=0}^k \prescript{}{l}{L}_k$.
+Dados $k,l \in \mathbb{N}$ tales que $l \leqslant k$ entonces $\prescript{}{l}{L}_k \eqdef T(s_k, s_l)$, $L_k \eqdef \bigvee\limits_{l=0}^k \prescript{}{l}{L}_k$.
 }
 
 \frame{\frametitle{Terminando la construcción de la fórmula (cont.)}
@@ -282,7 +285,7 @@ $M \models \allp \neg f$ si y solo si $\formul{M}{f}{k}$ es insatisfacible para 
 
 \frame{\frametitle{Cotas}
 {\bf Teorema 25.} Dada una fórmula LTL $f$ y una estructura de Kripke $M$, sea $|M|$ la cantidad de
-estados de $M$, entonces $M \models \existsp f$ si y solo si existe $k \leq M \cdot 2^{|f|}$ tal que $M \models_k \existsp f$.
+estados de $M$, entonces $M \models \existsp f$ si y solo si existe $k \leqslant M \cdot 2^{|f|}$ tal que $M \models_k \existsp f$.
 \bigskip
 
 {\bf Definición 26. (Diámetro del bucle).} Decimos que una estructura de Kripke $M$ tiene forma de lazo
@@ -291,7 +294,7 @@ En tal caso se define el diámetro del bucle de $M$ como $(u,v)$.
 \bigskip
 
 {\bf Teorema 27.} Dada una fórmula LTL $f$ y una estructura de Kripke $M$ con forma de lazo, sea $(u,v)$ el
-diámetro del bucle de $M$, entonces $M \models \existsp f$ si y solo si existe $k \leq u + v$ tal que
+diámetro del bucle de $M$, entonces $M \models \existsp f$ si y solo si existe $k \leqslant u + v$ tal que
 $M \models_k \existsp f$.
 }
 
