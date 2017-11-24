@@ -39,37 +39,37 @@
 
 \section{Prácticas de la materia}
 \frame{\frametitle{Presentación}
-El model checking es una t\'ecnica para verificar sistemas reactivos dado un sistema de transici\'on que lo represente y una especificaci\'on (usualmente en l\'ogicas temporales).
+El model checking es una técnica para verificar sistemas reactivos dado un sistema de transición que lo represente y una especificación (usualmente en lógicas temporales).
 \bigskip
 
-Symbolic model checking es una t\'ecnica que usa una representaci\'on can\'onica (mediante el uso de OBDDs) de los sistemas de transici\'on y de las f\'ormulas a chequear.
+Symbolic model checking es una técnica que usa una representación canónica (mediante el uso de OBDDs) de los sistemas de transición y de las fórmulas a chequear.
 \bigskip
 
-Dicha representaci\'on maneja hasta el orden de $10^{20}$ estados, para sistemas m\'as complejos, el c\'omputo se vuelve intratable.
+Dicha representación maneja hasta el orden de $10^{20}$ estados, para sistemas más complejos, el cómputo se vuelve intratable.
 
 }
 
 \frame{\frametitle{Presentación}
-Sin embargo, los OBDDs son muy sensibles al orden de las variables y adem\'as, en el peor caso su tamanio no es polinomial en la cantidad de variables.
+Sin embargo, los OBDDs son muy sensibles al orden de las variables y además, en el peor caso su tamaño no es polinomial en la cantidad de variables.
 \bigskip
 
-En este trabajo presentan un una t\'ecnica basada en SAT para model checking simb\'olico. La idea es considerar contraejemplos de un cierto tamanio y generar una f\'ormula proposicional que sea satisfacible si y solo si existe tal contraejemplo.
+En este trabajo presentan un una técnica basada en SAT para model checking simbólico. La idea es considerar contraejemplos de un cierto tamaño y generar una fórmula proposicional que sea satisfacible si y solo si existe tal contraejemplo.
 \bigskip
 
-La ventaja es que la reducci\'on se puede hacer en tiempo polinomial y no requiere la construcci\'on del
-aut\'omata completo.
+La ventaja es que la reducción se puede hacer en tiempo polinomial y no requiere la construcción del
+autómata completo.
 
-El m\'etodo propuesto es muy r\'apido , dada la naturaleza depth-first de SAT, y adem\'as encuentra contraejemplos de longitud m\'inima.
+El método propuesto es muy rápido , dada la naturaleza depth-first de SAT, y además encuentra contraejemplos de longitud mínima.
 }
 
 \frame{\frametitle{Presentación}
 {\bf Definition 1.} Una estructura de Kripke es una tupla $M = (S, I, T, \mathcal{L})$ con un conjunto finito de
-estados $S$, un conjunto de estados iniciales $I \subseteq S$, una relaci\'on de transici\'on $T \subseteq S \times S$, y un etiquetado de estados $\mathcal{L} : S \to \mathcal{P}(A)$ de proposiciones at\'omicas $A$.
+estados $S$, un conjunto de estados iniciales $I \subseteq S$, una relación de transición $T \subseteq S \times S$, y un etiquetado de estados $\mathcal{L} : S \to \mathcal{P}(A)$ de proposiciones atómicas $A$.
 \bigskip
 
 Aclaraciones
 \begin{itemize}
-  \item Usamos una codificaci\'on binaria de las variables.
+  \item Usamos una codificación binaria de las variables.
   \item $f_I(s) \iff s \in I$.
   \item $f_p(s) \iff p \in \mathcal{L}(s)$.
   \item $(s, t) \in T \iff s \to t$.
@@ -78,7 +78,7 @@ Aclaraciones
 }
 
 \frame{\frametitle{Presentación}
-{\bf Definition 2.} Sem\'antica. Dada una estructura de Kripke $M$, un camino $\pi$ en $M$, $f$ una f\'ormula de LTL. Entonces $\pi \models f$ ($f$ es v\'alido a lo largo de $\pi$) se define como sigue.
+{\bf Definition 2.} Semántica. Dada una estructura de Kripke $M$, un camino $\pi$ en $M$, $f$ una fórmula de LTL. Entonces $\pi \models f$ ($f$ es válido a lo largo de $\pi$) se define como sigue.
 \bigskip
 
 \begin{itemize}
@@ -96,23 +96,23 @@ Aclaraciones
 
 
 \frame{\frametitle{Presentación}
-{\bf Definition 3 (Validez).} Una f\'ormula LTL $f$ es universalmente v\'alida en una estructura de Kripke $M$ ($M \models \allp f$) si y solo si $\pi \models f$ para todos los caminos $\pi$ en $M$ con $\pi(0) \in I$.
-Una f\'ormula LTL $f$ es existencialmente v\'alida en una estructura de Kripke $M$ ($M \models \existsp f$) si y solo si existen un camino $\pi$ en $M$ con $\pi(0) \in I$ tal que $\pi \models f$.
+{\bf Definition 3 (Validez).} Una fórmula LTL $f$ es universalmente válida en una estructura de Kripke $M$ ($M \models \allp f$) si y solo si $\pi \models f$ para todos los caminos $\pi$ en $M$ con $\pi(0) \in I$.
+Una fórmula LTL $f$ es existencialmente válida en una estructura de Kripke $M$ ($M \models \existsp f$) si y solo si existen un camino $\pi$ en $M$ con $\pi(0) \in I$ tal que $\pi \models f$.
 
 \bigskip
   $M \models \allp f   \iff   M \not\models \existsp \neg f$
 
-% Es claro que una f\'ormula LTL $f$ es universalmente v\'alida en una estructura de Kripke si y solo si su negaci\'on no es existencialmente v\'alida.
+% Es claro que una fórmula LTL $f$ es universalmente válida en una estructura de Kripke si y solo si su negación no es existencialmente válida.
 
 \bigskip
-Reducimos la b\'usqueda de un contrajemplo de $\allp f$ a la b\'usqueda de una traza que satisfaga $\neg f$.
+Reducimos la búsqueda de un contrajemplo de $\allp f$ a la búsqueda de una traza que satisfaga $\neg f$.
 
 \bigskip
-La idea b\'asica del bouded model checking es considerar solo un prefijo finito de un camino que sea soluci\'on al problema de model checking existencial.
+La idea básica del bouded model checking es considerar solo un prefijo finito de un camino que sea solución al problema de model checking existencial.
 }
 
 \frame{\frametitle{Presentación}
-Que consideremos s\'olo prefijos finitos no quiere decir que consideremos s\'olo caminos finitos.
+Que consideremos sólo prefijos finitos no quiere decir que consideremos sólo caminos finitos.
 
 \bigskip
 Un prefijo finito puede representar un camino infinito si el prefijo contiene un loop.
@@ -122,20 +122,20 @@ Un prefijo finito puede representar un camino infinito si el prefijo contiene un
 
 \frame{\frametitle{Presentación}
 % FIGURA 2
-{\bf Definici\'on 4.} Para $l \leq k$ llamamos a un camino $\pi$ un $(k,l)$-loop si $\pi(k) \to \pi(l)$
+{\bf Definición 4.} Para $l \leq k$ llamamos a un camino $\pi$ un $(k,l)$-loop si $\pi(k) \to \pi(l)$
 y $\pi = u v^{\omega}$ con $u = (\pi(0), ..., \pi(l \iff 1))$ y $v = (\pi(l), ..., \pi(k))$.
 Llamamos a $\pi$ simplemente un $k$-loop si hay un $l \in \mathbb{N}$ tal que $l \leq k$ para el cual $\pi$
 es un $(k, l)$-loop.
 
 \bigskip
-{\bf Definici\'on 5. (Bounded semantics para trazas con loop)}
-Sea $k \in \mathbb{N}$ y sea $\pi$ un $k$-loop y $f$ una f\'ormula LTL.
+{\bf Definición 5. (Bounded semantics para trazas con loop)}
+Sea $k \in \mathbb{N}$ y sea $\pi$ un $k$-loop y $f$ una fórmula LTL.
 $\pi_k \models f \iff \pi \models f$.
 }
 
 \frame{\frametitle{Presentación}
 {\bf Definition 6. (Bounded semantics para trazas sin loops)}
-Sea $k \in \mathbb{N}$ y sea $\pi$ una traza que no es un $k$-loop y $f$ una f\'ormula LTL.
+Sea $k \in \mathbb{N}$ y sea $\pi$ una traza que no es un $k$-loop y $f$ una fórmula LTL.
 
 $\pi \models_k f \iff \pi \models^0_k f$
 
@@ -155,32 +155,32 @@ $\pi \models_k f \iff \pi \models^0_k f$
 
 \frame{\frametitle{Presentación}
 {\bf Lemma 7. (Soundness / Correctitud)}
-Sea $f$ una f\'ormula LTL, $k \in \mathbb{N}$ y $\pi$ un camino $\pi \models_k f \implies \pi \models f$.
+Sea $f$ una fórmula LTL, $k \in \mathbb{N}$ y $\pi$ un camino $\pi \models_k f \implies \pi \models f$.
 \bigskip
 
 {\bf Lemma 8. (Completeness / Completitud para existenciales)}
-Sea $f$ una f\'ormula LTL, $M$ estructura de Kripke. Si $M \models \existsp f$ entonces existe
+Sea $f$ una fórmula LTL, $M$ estructura de Kripke. Si $M \models \existsp f$ entonces existe
 $k \in \mathbb{N}$ tal que $M \models_k \existsp f$.
 \bigskip
 
 {\bf Teorema 9. (Correctitud y completitud para  existenciales)}
-Sea $f$ una f\'ormula LTL, $M$ estructura de Kripke. $M \models \existsp f$ si y solo si existe
+Sea $f$ una fórmula LTL, $M$ estructura de Kripke. $M \models \existsp f$ si y solo si existe
 $k \in \mathbb{N}$ tal que $M \models_k \existsp f$.
 }
 
 
 \frame{\frametitle{Presentación}
-Dada una estructura de Kripke $M$, una f\'ormula LTL $f$ y una cota $k$ construiremos la f\'ormula
-proposicional $\formul{M}{f}{k}$. Las variables $s_0, ..., s_k$ de $\formul{M}{f}{k}$ representar\'an la secuencia de estados de un camino $\pi$. Cada $s_i$ es un vector de variables de estado.
+Dada una estructura de Kripke $M$, una fórmula LTL $f$ y una cota $k$ construiremos la fórmula
+proposicional $\formul{M}{f}{k}$. Las variables $s_0, ..., s_k$ de $\formul{M}{f}{k}$ representarán la secuencia de estados de un camino $\pi$. Cada $s_i$ es un vector de variables de estado.
 
-La f\'ormula $\formul{M}{f}{k}$ representa esencialmente restricciones sonre $s_0, ..., s_k$ tal que $\formul{M}{f}{k}$ es satisfacible si y solo si $M \models_k \existsp f$.
+La fórmula $\formul{M}{f}{k}$ representa esencialmente restricciones sonre $s_0, ..., s_k$ tal que $\formul{M}{f}{k}$ es satisfacible si y solo si $M \models_k \existsp f$.
 
-El tamanio de $\formul{M}{f}{k}$ es polinomial en el tamanio de $f$, cuadr\'atica en $k$ y lineal en el tamanio
-de las f\'ormulas proposicionales para $T$, $I$ y $p \in A$.
+El tamaño de $\formul{M}{f}{k}$ es polinomial en el tamaño de $f$, cuadrática en $k$ y lineal en el tamaño
+de las fórmulas proposicionales para $T$, $I$ y $p \in A$.
 }
 
 \frame{\frametitle{Presentación}
-{\bf Definici\'on 10. (Desarrollando la condici\'on de transici\'on)}
+{\bf Definición 10. (Desarrollando la condición de transición)}
 Dada una estructura de Kripke $M$ y una cota $k \in \mathbb{N}$:
 \begin{center}
 $\dcorch{M}_k \eqdef I(s_0) \land \bigwedge\limits_{i=0}^{k-1} T(s_i, s_{i+1})$
@@ -189,8 +189,8 @@ $\dcorch{M}_k \eqdef I(s_0) \land \bigwedge\limits_{i=0}^{k-1} T(s_i, s_{i+1})$
 
 
 \frame{\frametitle{Presentación}
-{\bf Definici\'on 10. (Traduciendo una f\'ormula LTL sin un loop).}
-Dada una f\'ormula LTL $f$ y dados $k, i \in \mathbb{N}$ tales que $i \leq k$.
+{\bf Definición 10. (Traduciendo una fórmula LTL sin un loop).}
+Dada una fórmula LTL $f$ y dados $k, i \in \mathbb{N}$ tales que $i \leq k$.
 \begin{itemize}
   \item $\dcorch{p}^i_k \eqdef p(s_i)$
   \item $\dcorch{\neg p}^i_k \eqdef \neg p(s_i)$
@@ -208,8 +208,8 @@ Dada una f\'ormula LTL $f$ y dados $k, i \in \mathbb{N}$ tales que $i \leq k$.
 {\bf Definicion 12. (Sucesor en un loop). } Sea $k, l, i, \in \mathbb{N}$, con $l, i \leq k$.
 Definimos el sucesor $succ(i)$ de $i$ en un $(k,l)$-loop como $succ(i) = i + 1$ para $i < k$ y $succ(k) = l$.
 
-{\bf Definici\'on 13 (Traduccion de una f\'ormula LTL con un loop).}
-Dada una f\'ormula LTL $f$ y dados $k, l, i \in \mathbb{N}$ tales que $l, i \leq k$.
+{\bf Definición 13 (Traduccion de una fórmula LTL con un loop).}
+Dada una fórmula LTL $f$ y dados $k, l, i \in \mathbb{N}$ tales que $l, i \leq k$.
 
 \begin{itemize}
   \item $\ldcorch{p}^i_k \eqdef p(s_i)$
@@ -245,13 +245,13 @@ $\bigvee\limits_{j=l}^{i-1} \bigg(\ldcorch{f}_k^j \land \bigwedge\limits_{n=i}^{
 }
 
 \frame{\frametitle{Presentación}
-{\bf Definici\'on 14 (Condici\'on de ciclo).}
+{\bf Definición 14 (Condición de ciclo).}
 Dados $k,l \in \mathbb{N}$ tales que $l \leq k$ entonces $\prescript{}{l}{L}_k \eqdef T(s_k, s_l)$, $L_k \eqdef \bigvee\limits_{l=0}^k \prescript{}{l}{L}_k$.
 }
 
 \frame{\frametitle{Presentación}
-{\bf Definici\'on 15 (Traducci\'on general). }
-Sea $f$ una f\'ormula LTL, $M$ una estructura de Kripke y $k \in \mathbb{N}$.
+{\bf Definición 15 (Traducción general). }
+Sea $f$ una fórmula LTL, $M$ una estructura de Kripke y $k \in \mathbb{N}$.
 \[
   \formul{M}{f}{k} \eqdef \dcorch{M}_k \land \bigg(
     \bigg( \neg L_k \land \dcorch{f}_k^0\bigg) \lor
