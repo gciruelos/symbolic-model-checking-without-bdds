@@ -22,23 +22,29 @@
 
 \begin{document}
 \title{Symbolic Model Checking Without BDDs}
-\author{AA}
-\date{20 de septiembre de 2017}
+\author{Gabriel Thibeault y Gonzalo Ciruelos}
+\date{27 de noviembre de 2017}
 
 
 \frame{\titlepage}
 
-\section{Presentación}
-\frame{\frametitle{Presentación}
-\begin{itemize}
-    \item Symbolic Model Checking withouth BDDs
+\section{Introducción}
+\frame{\frametitle{El trabajo}
+\begin{center}
+    Symbolic Model Checking withouth BDDs
+\end{center}
     \vspace{2em}
-    \item Autores
+Autores:
+\begin{itemize}
+    \item Armin Biere
+    \item Alessandro Cimatti
+    \item Edmund Clarke
+    \item Yunshan Zhu
 \end{itemize}
+Todos pertenecen al Departamento de Computación de la Universidad de Carnegie Mellon.
 }
 
-\section{Prácticas de la materia}
-\frame{\frametitle{Presentación}
+\frame{\frametitle{Contexto}
 El model checking es una técnica para verificar sistemas reactivos dado un sistema de transición que lo represente y una especificación (usualmente en lógicas temporales).
 \bigskip
 
@@ -49,7 +55,7 @@ Dicha representación maneja hasta el orden de $10^{20}$ estados, para sistemas 
 
 }
 
-\frame{\frametitle{Presentación}
+\frame{\frametitle{Motivación}
 Sin embargo, los OBDDs son muy sensibles al orden de las variables y además, en el peor caso su tamaño no es polinomial en la cantidad de variables.
 \bigskip
 
@@ -62,7 +68,8 @@ autómata completo.
 El método propuesto es muy rápido , dada la naturaleza depth-first de SAT, y además encuentra contraejemplos de longitud mínima.
 }
 
-\frame{\frametitle{Presentación}
+\section{Desarrollo}
+\frame{\frametitle{Definiciones}
 {\bf Definition 1.} Una estructura de Kripke es una tupla $M = (S, I, T, \mathcal{L})$ con un conjunto finito de
 estados $S$, un conjunto de estados iniciales $I \subseteq S$, una relación de transición $T \subseteq S \times S$, y un etiquetado de estados $\mathcal{L} : S \to \mathcal{P}(A)$ de proposiciones atómicas $A$.
 \bigskip
@@ -77,7 +84,7 @@ Aclaraciones
 \end{itemize}
 }
 
-\frame{\frametitle{Presentación}
+\frame{\frametitle{Definiciones...}
 {\bf Definition 2.} Semántica. Dada una estructura de Kripke $M$, un camino $\pi$ en $M$, $f$ una fórmula de LTL. Entonces $\pi \models f$ ($f$ es válido a lo largo de $\pi$) se define como sigue.
 \bigskip
 
@@ -95,7 +102,7 @@ Aclaraciones
 }
 
 
-\frame{\frametitle{Presentación}
+\frame{\frametitle{Definiciones... (cont.)}
 {\bf Definition 3 (Validez).} Una fórmula LTL $f$ es universalmente válida en una estructura de Kripke $M$ ($M \models \allp f$) si y solo si $\pi \models f$ para todos los caminos $\pi$ en $M$ con $\pi(0) \in I$.
 Una fórmula LTL $f$ es existencialmente válida en una estructura de Kripke $M$ ($M \models \existsp f$) si y solo si existen un camino $\pi$ en $M$ con $\pi(0) \in I$ tal que $\pi \models f$.
 
@@ -105,13 +112,13 @@ Una fórmula LTL $f$ es existencialmente válida en una estructura de Kripke $M$
 % Es claro que una fórmula LTL $f$ es universalmente válida en una estructura de Kripke si y solo si su negación no es existencialmente válida.
 
 \bigskip
-Reducimos la búsqueda de un contrajemplo de $\allp f$ a la búsqueda de una traza que satisfaga $\neg f$.
+Reducimos la búsqueda de un contraejemplo de $\allp f$ a la búsqueda de una traza que satisfaga $\neg f$.
 
 \bigskip
-La idea básica del bouded model checking es considerar solo un prefijo finito de un camino que sea solución al problema de model checking existencial.
+La idea básica del bounded model checking es considerar solo un prefijo finito de un camino que sea solución al problema de model checking existencial.
 }
 
-\frame{\frametitle{Presentación}
+\frame{\frametitle{Loops}
 Que consideremos sólo prefijos finitos no quiere decir que consideremos sólo caminos finitos.
 
 \bigskip
@@ -120,7 +127,7 @@ Un prefijo finito puede representar un camino infinito si el prefijo contiene un
 % FIGURA 2
 }
 
-\frame{\frametitle{Presentación}
+\frame{\frametitle{Loops}
 % FIGURA 2
 {\bf Definición 4.} Para $l \leq k$ llamamos a un camino $\pi$ un $(k,l)$-loop si $\pi(k) \to \pi(l)$
 y $\pi = u v^{\omega}$ con $u = (\pi(0), ..., \pi(l \iff 1))$ y $v = (\pi(l), ..., \pi(k))$.
@@ -133,8 +140,8 @@ Sea $k \in \mathbb{N}$ y sea $\pi$ un $k$-loop y $f$ una fórmula LTL.
 $\pi_k \models f \iff \pi \models f$.
 }
 
-\frame{\frametitle{Presentación}
-{\bf Definition 6. (Bounded semantics para trazas sin loops)}
+\frame{\frametitle{Loops}
+{\bf Definición 6. (Bounded semantics para trazas sin loops)}
 Sea $k \in \mathbb{N}$ y sea $\pi$ una traza que no es un $k$-loop y $f$ una fórmula LTL.
 
 $\pi \models_k f \iff \pi \models^0_k f$
@@ -153,7 +160,7 @@ $\pi \models_k f \iff \pi \models^0_k f$
 }
 
 
-\frame{\frametitle{Presentación}
+\frame{\frametitle{Todo anda}
 {\bf Lemma 7. (Soundness / Correctitud)}
 Sea $f$ una fórmula LTL, $k \in \mathbb{N}$ y $\pi$ un camino $\pi \models_k f \implies \pi \models f$.
 \bigskip
@@ -169,17 +176,19 @@ $k \in \mathbb{N}$ tal que $M \models_k \existsp f$.
 }
 
 
-\frame{\frametitle{Presentación}
+\frame{\frametitle{Construyendo la fórmula}
 Dada una estructura de Kripke $M$, una fórmula LTL $f$ y una cota $k$ construiremos la fórmula
 proposicional $\formul{M}{f}{k}$. Las variables $s_0, ..., s_k$ de $\formul{M}{f}{k}$ representarán la secuencia de estados de un camino $\pi$. Cada $s_i$ es un vector de variables de estado.
+\bigskip
 
-La fórmula $\formul{M}{f}{k}$ representa esencialmente restricciones sonre $s_0, ..., s_k$ tal que $\formul{M}{f}{k}$ es satisfacible si y solo si $M \models_k \existsp f$.
+La fórmula $\formul{M}{f}{k}$ representa esencialmente restricciones sobre $s_0, ..., s_k$ tal que $\formul{M}{f}{k}$ es satisfacible si y solo si $M \models_k \existsp f$.
+\bigskip
 
 El tamaño de $\formul{M}{f}{k}$ es polinomial en el tamaño de $f$, cuadrática en $k$ y lineal en el tamaño
 de las fórmulas proposicionales para $T$, $I$ y $p \in A$.
 }
 
-\frame{\frametitle{Presentación}
+\frame{\frametitle{Construyendo la fórmula (cont.)}
 {\bf Definición 10. (Desarrollando la condición de transición)}
 Dada una estructura de Kripke $M$ y una cota $k \in \mathbb{N}$:
 \begin{center}
@@ -188,7 +197,7 @@ $\dcorch{M}_k \eqdef I(s_0) \land \bigwedge\limits_{i=0}^{k-1} T(s_i, s_{i+1})$
 }
 
 
-\frame{\frametitle{Presentación}
+\frame{\frametitle{Traduciendo las fórmulas LTL cuando no hay loop}
 {\bf Definición 10. (Traduciendo una fórmula LTL sin un loop).}
 Dada una fórmula LTL $f$ y dados $k, i \in \mathbb{N}$ tales que $i \leq k$.
 \begin{itemize}
@@ -204,11 +213,11 @@ Dada una fórmula LTL $f$ y dados $k, i \in \mathbb{N}$ tales que $i \leq k$.
 \end{itemize}
 }
 
-\frame{\frametitle{Presentación}
-{\bf Definicion 12. (Sucesor en un loop). } Sea $k, l, i, \in \mathbb{N}$, con $l, i \leq k$.
+\frame{\frametitle{Traduciendo las fórmulas LTL cuando hay loop}
+{\bf Definición 12. (Sucesor en un loop). } Sea $k, l, i, \in \mathbb{N}$, con $l, i \leq k$.
 Definimos el sucesor $succ(i)$ de $i$ en un $(k,l)$-loop como $succ(i) = i + 1$ para $i < k$ y $succ(k) = l$.
 
-{\bf Definición 13 (Traduccion de una fórmula LTL con un loop).}
+{\bf Definición 13 (Traducción de una fórmula LTL con un loop).}
 Dada una fórmula LTL $f$ y dados $k, l, i \in \mathbb{N}$ tales que $l, i \leq k$.
 
 \begin{itemize}
@@ -222,7 +231,8 @@ Dada una fórmula LTL $f$ y dados $k, l, i \in \mathbb{N}$ tales que $l, i \leq 
 \end{itemize}
 }
 
-\frame{\frametitle{Presentación}
+
+\frame{\frametitle{Traduciendo las fórmulas LTL cuando hay loop (caso $f \until g$)}
 \begin{center}
 $\ldcorch{f \until g}^i_k \eqdef \bigvee\limits_{j=i}^k \bigg(\ldcorch{g}_k^j \land \bigwedge\limits_{n=i}^{j-1} \ldcorch{f}_k^n \bigg) \lor$
 $\bigvee\limits_{j=l}^{i-1} \bigg(\ldcorch{g}_k^j \land \bigwedge\limits_{n=i}^{k} \ldcorch{f}_k^n
@@ -233,9 +243,9 @@ $\bigvee\limits_{j=l}^{i-1} \bigg(\ldcorch{g}_k^j \land \bigwedge\limits_{n=i}^{
 }
 
 
-\frame{\frametitle{Presentación}
+\frame{\frametitle{Traduciendo las fórmulas LTL cuando hay loop (caso $f \rel g$)}
 \begin{center}
-$\ldcorch{f \until g}^i_k \eqdef \bigwedge\limits_{j=min(i,l)}^k \ldcorch{g}_k^j \lor$
+$\ldcorch{f \rel g}^i_k \eqdef \bigwedge\limits_{j=min(i,l)}^k \ldcorch{g}_k^j \lor$
 
 $\bigvee\limits_{j=i}^k \bigg(\ldcorch{f}_k^j \land \bigwedge\limits_{n=i}^{j} \ldcorch{g}_k^n \bigg) \lor$
 
@@ -244,12 +254,12 @@ $\bigvee\limits_{j=l}^{i-1} \bigg(\ldcorch{f}_k^j \land \bigwedge\limits_{n=i}^{
 \end{center}
 }
 
-\frame{\frametitle{Presentación}
+\frame{\frametitle{Terminando la construcción de la fórmula}
 {\bf Definición 14 (Condición de ciclo).}
 Dados $k,l \in \mathbb{N}$ tales que $l \leq k$ entonces $\prescript{}{l}{L}_k \eqdef T(s_k, s_l)$, $L_k \eqdef \bigvee\limits_{l=0}^k \prescript{}{l}{L}_k$.
 }
 
-\frame{\frametitle{Presentación}
+\frame{\frametitle{Terminando la construcción de la fórmula (cont.)}
 {\bf Definición 15 (Traducción general). }
 Sea $f$ una fórmula LTL, $M$ una estructura de Kripke y $k \in \mathbb{N}$.
 \[
@@ -267,6 +277,22 @@ $\formul{M}{f}{k}$ es satisfacible si y solo si $M \models_k \existsp f$.
 {\bf Corolario 17. (Correctitud v2 del algoritmo).}
 $M \models \allp \neg f$ si y solo si $\formul{M}{f}{k}$ es insatisfacible para todo $k \in \mathbb{N}$.
 }
+
+\frame{\frametitle{Cotas}
+{\bf Teorema 25.} Dada una fórmula LTL $f$ y una estructura de Kripke $M$, sea $|M|$ la cantidad de
+estados de $M$, entonces $M \models \existsp f$ si y solo si existe $k \leq M \cdot 2^{|f|}$ tal que $M \models_k \existsp f$.
+\bigskip
+
+{\bf Definición 26. (Diámetro del bucle).} Decimos que una estructura de Kripke $M$ tiene forma de lazo
+si existen $u, v \in \mathbb{N}$ tal que para todo camino $p$ que empieza en un estado inicial, $p = u_p v_p^{\omega}$, donde $u_p$ y $v_p$ son secuencias de longitud finita de largo menor a $u$ y $v$ respectivamente.
+En tal caso se define el diámetro del bucle de $M$ como $(u,v)$.
+\bigskip
+
+{\bf Teorema 27.} Dada una fórmula LTL $f$ y una estructura de Kripke $M$ con forma de lazo, sea $(u,v)$ el
+diámetro del bucle de $M$, entonces $M \models \existsp f$ si y solo si existe $k \leq u + v$ tal que
+$M \models_k \existsp f$.
+}
+
 
 \frame{
 \huge
