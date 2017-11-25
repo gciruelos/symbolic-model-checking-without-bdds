@@ -72,21 +72,21 @@ $^2$ Instituto de Investigación Científica y Tecnológica de Provo, Italia
 }
 
 \frame{\frametitle{Contexto}
-El model checking es una técnica para verificar sistemas reactivos dado un sistema de transición que lo represente y una especificación (usualmente en lógicas temporales).
+Model checking verifica sistemas reactivos dado sistemas de transición que los representen y una especificación (usualmente en lógicas temporales).
 \bigskip
 
-Symbolic model checking es una técnica que usa una representación canónica (mediante el uso de OBDDs) de los sistemas de transición y de las fórmulas a chequear.
+Symbolic model checking usa una representación canónica (en particular, OBDDs) de los sistemas de transición y de las fórmulas a chequear.
 \bigskip
 
-Dicha representación maneja hasta el orden de $10^{20}$ estados, para sistemas más complejos, el cómputo se vuelve intratable.
+Puede manejar hasta el orden de $10^{20}$ estados; para sistemas más complejos, el cómputo se vuelve intratable.
 
 }
 
 \frame{\frametitle{Motivación}
-Sin embargo, los OBDDs son muy sensibles al orden de las variables y además, en el peor caso su tamaño no es polinomial en la cantidad de variables.
+Los OBDDs son muy sensibles al ordenamiento de las variables y en el peor caso su tamaño no es polinomial en la cantidad de variables.
 \bigskip
 
-En este trabajo presentan un una técnica basada en SAT para model checking simbólico. La idea es considerar contraejemplos de un cierto tamaño y generar una fórmula proposicional que sea satisfacible si y solo si existe tal contraejemplo.
+En este trabajo presentan un una técnica basada en SAT para model checking simbólico. La idea es considerar contraejemplos de un cierto tamaño y generar una fórmula proposicional que sea satisfacible si y sólo si existe tal contraejemplo.
 \bigskip
 
 La ventaja es que la reducción se puede hacer en tiempo polinomial y no requiere la construcción del
@@ -150,7 +150,7 @@ El método propuesto es muy rápido , dada la naturaleza depth-first de SAT, y a
 Reducimos la búsqueda de un contraejemplo de $\allp f$ a la búsqueda de una traza que satisfaga $\neg f$.
 
 \bigskip
-La idea básica del bounded model checking es considerar solo un prefijo finito de un camino que sea solución al problema de model checking existencial.
+La idea básica del bounded model checking es considerar sólo un prefijo finito de un camino que sea solución al problema de model checking existencial.
 }
 
 \frame{\frametitle{Loops}
@@ -191,10 +191,10 @@ $\pi \models_k f \iff \pi \models^0_k f$
   \item $\pi \models^i_k f \land g \iff \pi \models^i_k f \text{ y } \pi \models^i_k g$
   \item $\pi \models^i_k f \lor g \iff \pi \models^i_k f \text{ o } \pi \models^i_k g$
   \item $\pi \models^i_k \squarep f \iff False$
-  \item $\pi \models^i_k \lozp f \iff \exists i \leqslant j \leqslant k. \pi \models^j_k f$
+  \item $\pi \models^i_k \lozp f \iff \exists i \leqslant \boldsymbol{j} \leqslant k, \pi \models^j_k f$
   \item $\pi \models^i_k \opnext f \iff i < k \text{ y } \pi \models^{i+1}_k f$
-  \item {\small $\pi \models^i_k f \until g \iff \exists j, i \leqslant j \leqslant k [ \pi \models^j_k g \text{ y } \forall n, i \leqslant n < j, \pi \models^n_k f]$}
-  \item {\small $\pi \models^i_k f \rel g \iff \exists j, i \leqslant j \leqslant k [ \pi \models^j_k f \text{ y } \forall n, i \leqslant n < j, \pi \models^n_k g]$}
+  \item {\small $\pi \models^i_k f \until g \iff \exists i \leqslant \boldsymbol{j} \leqslant k, [ \pi \models^j_k g \text{ y } \forall i \leqslant \boldsymbol{n} < j, \pi \models^n_k f]$}
+  \item {\small $\pi \models^i_k f \rel g   \iff \exists i \leqslant \boldsymbol{j} \leqslant k, [ \pi \models^j_k f \text{ y } \forall i \leqslant \boldsymbol{n} < j, \pi \models^n_k g]$}
 \end{itemize}
 }
 
@@ -220,11 +220,12 @@ $M \models \existsp f \iff \exists k \in \mathbb{N} /\ M \models_k \existsp f$.
 
 
 \frame{\frametitle{Construyendo la fórmula}
-Dada una estructura de Kripke $M$, una fórmula LTL $f$ y una cota $k$ construiremos la fórmula
+Dada una estructura de Kripke $M$, una fórmula LTL $f$ y una cota $k \in \mathbb{N} \in \mathbb{N}$ construiremos la fórmula
 proposicional $\formul{M}{f}{k}$. Las variables $s_0, ..., s_k$ de $\formul{M}{f}{k}$ representarán la secuencia de estados de un camino $\pi$. Cada $s_i$ es un vector de variables de estado.
 \bigskip
 
-La fórmula $\formul{M}{f}{k}$ representa esencialmente restricciones sobre $s_0, ..., s_k$ tal que $\formul{M}{f}{k}$ es satisfacible si y solo si $M \models_k \existsp f$.
+La fórmula $\formul{M}{f}{k}$ representa esencialmente restricciones sobre $s_0, ..., s_k /\ \formul{M}{f}{k}
+\text{ es satisfacible} \iff M \models_k \existsp f$.
 \bigskip
 
 El tamaño de $\formul{M}{f}{k}$ es polinomial en el tamaño de $f$, cuadrática en $k$ y lineal en el tamaño
