@@ -294,14 +294,15 @@ $\bigvee\limits_{j=l}^{i-1} \bigg(\ldcorch{g}_k^j \land \bigwedge\limits_{n=i}^{
 
 
 \frame{\frametitle{Traduciendo las fórmulas LTL cuando hay loop (caso $f \rel g$)}
-\begin{center}
 $\ldcorch{f \rel g}^i_k \eqdef \bigwedge\limits_{j=min(i,l)}^k \ldcorch{g}_k^j \lor$
+\includegraphics[width=4cm]{images/Gg.jpg}
 
 $\bigvee\limits_{j=i}^k \bigg(\ldcorch{f}_k^j \land \bigwedge\limits_{n=i}^{j} \ldcorch{g}_k^n \bigg) \lor$
+\includegraphics[width=4cm]{images/gU(fyg)sinlooparound.jpg}
 
 $\bigvee\limits_{j=l}^{i-1} \bigg(\ldcorch{f}_k^j \land \bigwedge\limits_{n=i}^{k} \ldcorch{g}_k^n
                                                  \land \bigwedge\limits_{n=l}^{j} \ldcorch{g}_k^n \bigg)$
-\end{center}
+\includegraphics[width=4cm]{images/gU(fyg)conlooparound.jpg}
 }
 
 \frame{\frametitle{Terminando la construcción de la fórmula}
